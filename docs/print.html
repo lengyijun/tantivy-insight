@@ -7,13 +7,24 @@
         
         <meta name="robots" content="noindex" />
         
+        
+
+
+        <!-- Custom HTML head -->
+        
+
 
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        
+        <link rel="icon" href="favicon.svg">
+        
+        
         <link rel="shortcut icon" href="favicon.png">
+        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
@@ -21,8 +32,9 @@
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -38,7 +50,7 @@
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -83,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="files.html"><strong aria-hidden="true">2.</strong> 索引文件</a></li><li class="chapter-item expanded "><a href="merging.html"><strong aria-hidden="true">3.</strong> Merging Policy</a></li><li class="chapter-item expanded "><a href="term.html"><strong aria-hidden="true">4.</strong> Term</a></li><li class="chapter-item expanded "><a href="postings.html"><strong aria-hidden="true">5.</strong> 倒排索引</a></li><li class="chapter-item expanded "><a href="search.html"><strong aria-hidden="true">6.</strong> 搜索</a></li><li class="chapter-item expanded "><a href="skiplist.html"><strong aria-hidden="true">7.</strong> 跳表</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">2.</strong> 索引生成</a></li><li class="chapter-item expanded "><a href="files.html"><strong aria-hidden="true">3.</strong> 索引文件</a></li><li class="chapter-item expanded "><a href="merging.html"><strong aria-hidden="true">4.</strong> Merging Policy</a></li><li class="chapter-item expanded "><a href="term.html"><strong aria-hidden="true">5.</strong> Term</a></li><li class="chapter-item expanded "><a href="postings.html"><strong aria-hidden="true">6.</strong> 倒排索引</a></li><li class="chapter-item expanded "><a href="search.html"><strong aria-hidden="true">7.</strong> 搜索</a></li><li class="chapter-item expanded "><a href="skiplist.html"><strong aria-hidden="true">8.</strong> 跳表</a></li><li class="chapter-item expanded "><a href="fst.html"><strong aria-hidden="true">9.</strong> FST</a></li><li class="chapter-item expanded "><a href="m25.html"><strong aria-hidden="true">10.</strong> M25</a></li><li class="chapter-item expanded "><a href="lucene.html"><strong aria-hidden="true">11.</strong> Lucene</a></li><li class="chapter-item expanded "><a href="Q&A.html"><strong aria-hidden="true">12.</strong> Q&amp;A</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -150,20 +162,47 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#为什么在有elastic-search的情况下还要tantivy" id="为什么在有elastic-search的情况下还要tantivy">为什么在有Elastic Search的情况下,还要Tantivy?</a></h1>
-<p>因为Tantivy比Lucene快</p>
-<p>而且Rust写的有更多的可能性.可以移植到SGX中,也可能放到WASM中.(写Rust附送WASM)</p>
+<ol>
+<li>
+<p>Tantivy比Lucene快</p>
+</li>
+<li>
+<p>Rust写的有更多的可能性</p>
+</li>
+</ol>
+<p>Rust 写的可以移植到intel SGX中,也可能放到WASM中(写Rust附送WASM)</p>
+<h1><a class="header" href="#为什么tantivy比lucene快" id="为什么tantivy比lucene快">为什么tantivy比lucene快?</a></h1>
+<p>如果只说tantivy是Rust写的,所以比java快,是不准确的. lucene的移植,比如Rucene,clucene都比lucene慢</p>
+<p>真正的原因是:</p>
+<p>SIMD</p>
+<p>the care given to what should be a static dispatch and what can be a dynamic dispatch</p>
+<p>on the indexer side,the data structure is sensibly different</p>
+<p>For count on unions, the algorithm is better on tantivy's side</p>
+<p>Finally there is a couple of difference in phase queries handling, I don't know if that make s difference to be honest</p>
+<h1><a class="header" href="#建立索引" id="建立索引">建立索引</a></h1>
+<p>首先放在内存中.当体积达到一定大的时候,就flush到磁盘.还在内存没有flush的时候是不能搜索的,所以tantivy,lucene叫做接近实时,而非绝对实时</p>
+<p>flush到磁盘可以是手工的,也可以是自动的.按需求来.</p>
+<p>在tantivy-sgx中需要手工调用commit来刷新索引,因为我去掉了对于磁盘的监控</p>
 <table><thead><tr><th></th><th></th><th></th><th></th></tr></thead><tbody>
 <tr><td>POSTING</td><td>8.5M</td><td>.idx</td><td>倒排索引</td></tr>
 <tr><td>POSTIONS</td><td>1.6G</td><td>.pos</td><td>每个Term在document中的position</td></tr>
 <tr><td>TERMS</td><td>60M</td><td>.term</td><td>Term-&gt;TermInfo dictionary. 使用FST</td></tr>
 <tr><td>STORE</td><td>4.5G</td><td>.store</td><td>原document.如果Scheme中加了STORE</td></tr>
-<tr><td>POSTITIONSSKIP</td><td>9.4M</td><td>.posidx</td><td></td></tr>
-<tr><td>FIELDNORMS</td><td>8.5M</td><td>.fieldnorm</td><td></td></tr>
-<tr><td>FASTFIELDS</td><td>5byte</td><td>.fast</td><td>空的</td></tr>
+<tr><td>POSTITIONSSKIP</td><td>9.4M</td><td>.posidx</td><td>todo</td></tr>
+<tr><td>FIELDNORMS</td><td>8.5M</td><td>.fieldnorm</td><td>todo</td></tr>
+<tr><td>FASTFIELDS</td><td>5byte</td><td>.fast</td><td>空文件</td></tr>
 </tbody></table>
+<h2><a class="header" href="#tantivy中有时会产生很大的索引文件比如表格中的pos文件那么他是怎么读到内存中的" id="tantivy中有时会产生很大的索引文件比如表格中的pos文件那么他是怎么读到内存中的">Tantivy中,有时会产生很大的索引文件,比如表格中的.pos文件.那么他是怎么读到内存中的?</a></h2>
+<p>首先文件用mmap读到内存中,然后转到某个数据结构.</p>
+<p>但是转成某个数据结构之后,原始文件还会在缓存中存在.用的是一个HashMap.虽然我不确定HashMap的意义,毕竟把内存搞的很大</p>
 <h1><a class="header" href="#merging-policy" id="merging-policy">Merging Policy</a></h1>
-<p>一个document一开始是一个segment.成百上千的segment总是需要合并的.大多数时候可以合到只有一个Segment</p>
-<p>Merge的时候会使用Merging Policy. Tantivy中只有一个Merging Policy. 他的工作流程如下:</p>
+<p>一个document一开始是一个segment.
+成百上千的document就会是成百上千的segment.
+搜索的时候,每个segment作为一个独立的单元进行搜索
+如果有100个segment,那就有1000个线程在搜索,这显然不行.
+大多数时候可以合到只有一个Segment.我们尽可能合并成只有几个Segment.我最多见过7个Segment.
+合并的过程称为merge</p>
+<p>Merge的时候会使用Merging Policy. Tantivy中只实现一个Merging Policy. 他的工作流程如下:</p>
 <ol>
 <li>首先如果一个Segment太大,就不管了</li>
 <li>找到和Segment差不多大的一些Segment,比如 8 9 10可以考虑合在一起. 100的就不聚在一起了</li>
@@ -177,6 +216,7 @@
 <p>多个Term的组合是查询条件, 比如 title:obama  OR title:president OR body:obama OR body:president </p>
 <p>一个Term是个[u8]. 前4个u8(u32),表示title/body. u32&lt;-&gt;title/body在Schema中.</p>
 <p>Term[5:]表示obama</p>
+<p>term会放在fst中,写在硬盘里</p>
 <h1><a class="header" href="#postings" id="postings">Postings</a></h1>
 <p>也称为Inverted list, posting list</p>
 <p>是Term -&gt; [DocId] 的映射</p>
@@ -190,6 +230,129 @@
 <p>在倒排索引中使用了跳表.来加速查询.</p>
 <p>每个Term建立一个跳表.跳表里存DocId. 可以快速查询一篇文档里面有没有这个Term</p>
 <p>跳表只在内存中,不存磁盘.因为没有序列化方法(serde)</p>
+<h1><a class="header" href="#fst" id="fst">FST</a></h1>
+<p>FST=Trie(前缀压缩)+后缀压缩</p>
+<p>FST优化Trie的同时,也带来了新的问题.否则还要Trie干嘛.</p>
+<h2><a class="header" href="#fst-vs-trie" id="fst-vs-trie">FST vs Trie</a></h2>
+<ol>
+<li>Trie只适合英文</li>
+<li>FST能压缩前缀和后缀. Trie只能压缩前缀</li>
+<li>Trie对插入顺序无所谓,但是FST要求必须按字母顺序插入</li>
+<li>FST主要用在放硬盘里,Trie的序列化到硬盘没见过</li>
+<li>FST加入之后很难修改/删除.Trie的修改和删除容易一点 </li>
+</ol>
+<p>FST修改/删除=重新构建一个FST.删除不能简单的做个标注,因为你要考虑不同路径来的都删除了.</p>
+<p>https://www.cnblogs.com/bonelee/p/6226185.html</p>
+<hr />
+<h2><a class="header" href="#用fst能做什么" id="用fst能做什么">用FST能做什么?</a></h2>
+<ul>
+<li>有序集合</li>
+<li>有序dictionary (value需要定义运算符,比如整数的加法)</li>
+</ul>
+<p>FST与存储相关联.如果只在内存中,不如用无序的hashmap或者有序的BTree.</p>
+<p>存储可以是硬盘,socket或者内存.反正是Rust中writable的东西</p>
+<hr />
+<h2><a class="header" href="#fst-vs-btreesetbtreemap" id="fst-vs-btreesetbtreemap">FST vs BTreeSet,BTreeMap</a></h2>
+<p>Rust标准库里有  BTreeSet 和 BTreeMap. 他们是有序的集合和有序的map.</p>
+<p>FST也是有序的.那么他们的区别是</p>
+<ol>
+<li>FST中key只能是byte sequences. 必须能用[u8] 表示. BTreeSet和BTreeMap中key只要能序列化就行</li>
+<li>FST中value暂时只能是u64. 顶多支持能定义+的格式比如字符串. BTreeMap没有限制</li>
+<li>BTreeSet和BTreeMap的插入,不需要按照顺序.但是FST必须是按顺序插入.不按顺序插入会报错.也就是说FST没有很好的动态扩展性</li>
+</ol>
+<hr />
+<h2><a class="header" href="#fst-vs-gzip" id="fst-vs-gzip">FST vs gzip</a></h2>
+<ol>
+<li>压缩时间和压缩率上,gzip都比FST好</li>
+<li>但是FST能在上面做搜索</li>
+</ol>
+<hr />
+<h2><a class="header" href="#fst-如何压缩后缀的" id="fst-如何压缩后缀的">FST 如何压缩后缀的</a></h2>
+<p>首先要求按字母顺序的插入.否则只能重新构建.现在FST的实现也是这样的.</p>
+<p>难点在于,一个点从unfinished变成finished, 如何判断相同的状态已经出现过了.</p>
+<h3><a class="header" href="#如何判断两个点是不是一样的-" id="如何判断两个点是不是一样的-">如何判断两个点是不是一样的 ?</a></h3>
+<ol>
+<li>是否同时是终态,或者同时不是终态</li>
+<li>所有的儿子是不是一样</li>
+<li>去每个儿子的路径上面的字母(如果是map,还是u64),是不是一样</li>
+</ol>
+<p>只有3个条件都满足,才能合并.</p>
+<p>如果点的数量不大,可以一个一个条件去比较. 但如果数量太多,最好能压缩一下状态.FST用了一个cache压缩状态,就是把所有条件都xor起来,变成一个u64.</p>
+<hr />
+<h2><a class="header" href="#例子" id="例子">例子</a></h2>
+<p><img src="./abcdSS.png" alt="abcdSS" /></p>
+<p>如上图,插入的是abc 和 abcd 两个单词,就会有两个终止状态.FST中不一定只有一个终止状态.也就是说,如果插入的两个单词有前缀关系,就会出现多个终止态.</p>
+<p>FST插入一定要按照字典序,例如必须先插入abc,再插入abcd.</p>
+<p>如果先插入了abcd,即下图</p>
+<p><img src="./abcd.png" alt="abcd" /></p>
+<p>再插入abc,对于状态4来说,就有点尴尬了.一个普通状态要变成终止态?</p>
+<hr />
+<p>我们再看一个插入顺序的问题,导致发生严重后果的例子.首先我们插入thursday和wednesday.现在的FST是正确的.</p>
+<p><img src="./thursday.png" alt="thursday" /></p>
+<p>如果我们再插入一个单词 thurs ,变成下图</p>
+<p><img src="./thursdaySS.png" alt="thursdaySS" /></p>
+<p>副作用是 wednes 也在这个FST中. 这不是我们想要的</p>
+<p>我们正确的插入顺序是 thurs thursday wednesday ,FST图应该是这样</p>
+<p><img src="./thursdayTT.png" alt="thursdayTT" /></p>
+<p>注意S2和q14是不同的两个点.不能捏在一起.</p>
+<h2><a class="header" href="#fst-的编程实现" id="fst-的编程实现">FST 的编程实现</a></h2>
+<ol>
+<li>在现有的FST 中,找到最长前缀.前缀压缩总是安全的,就算路过终态也没关系.终态的点也可以复用.</li>
+</ol>
+<p>最后一个单词的每一个节点,都是 BuilderNodeUnfinished . BuilderNodeUnfinished 表示这个点还可能有新的儿子节点.只有一个节点,不会在生出新的儿子节点,才可能从后缀开始合并.</p>
+<h2><a class="header" href="#原则" id="原则">原则</a></h2>
+<ul>
+<li>一个点只可能unfinished转成finished,不可能finished转成unfinished</li>
+<li>起点总是非终态的。直到全部完成</li>
+<li>总有一个终态对象是可以复用的</li>
+</ul>
+<p>FST的美妙之处在于,虽然没有太刻意的处理前缀,但是前缀还是压缩了.</p>
+<h2><a class="header" href="#如何学习fst" id="如何学习fst">如何学习FST</a></h2>
+<p>fst-bin 目录提供的二进制可以把fst文件转成graphviz格式,然后可以画出图片.参见 <code>fst -h</code> </p>
+<p>如果你想知道某几个输入之后的FST的形状,可以用它画一画.</p>
+<h2><a class="header" href="#fst如何序列化" id="fst如何序列化">FST如何序列化</a></h2>
+<p>todo 有点绕,不想看了.反正没用serde</p>
+<h2><a class="header" href="#fst如果做模糊搜索的levenshteinregex" id="fst如果做模糊搜索的levenshteinregex">FST如果做模糊搜索的(Levenshtein,regex)</a></h2>
+<p>todo</p>
+<h2><a class="header" href="#tantivy中的fst" id="tantivy中的fst">Tantivy中的FST</a></h2>
+<p>tantivy中FST用来存term</p>
+<p>tantivy魔改了FST,我还没细看.为什么要魔改,我也不清楚</p>
+<h2><a class="header" href="#参考文献" id="参考文献">参考文献</a></h2>
+<p>https://blog.burntsushi.net/transducers/</p>
+<h1><a class="header" href="#m25" id="m25">M25</a></h1>
+<p>todo</p>
+<h1><a class="header" href="#lucene" id="lucene">Lucene</a></h1>
+<p>这里整理一些我看到的和lucene相关的资料</p>
+<table><thead><tr><th>Jargon</th><th>Meaning</th></tr></thead><tbody>
+<tr><td>Field</td><td>StringField, TextField and NumericDocValuesField</td></tr>
+<tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr>
+</tbody></table>
+<h2><a class="header" href="#pattern" id="pattern">Pattern</a></h2>
+<table><thead><tr><th></th><th></th></tr></thead><tbody>
+<tr><td>java</td><td>默认域包含java项的文档</td></tr>
+<tr><td>java unit</td><td>默认域包含java或者unit的文档</td></tr>
+<tr><td>java OR unit</td><td>同上</td></tr>
+<tr><td>+java +unit</td><td>默认域同时包含java和unit的文档</td></tr>
+<tr><td>java AND unit</td><td>同上</td></tr>
+<tr><td>title:ant</td><td>title域中包含ant的文档</td></tr>
+<tr><td>java~</td><td>与java相似的项的文档,例如lava</td></tr>
+<tr><td>java*</td><td>包含与java开头的项的文档,例如javaserver java.net</td></tr>
+<tr><td></td><td></td></tr>
+</tbody></table>
+<h2><a class="header" href="#merging-policy-1" id="merging-policy-1">Merging policy</a></h2>
+<p>有两种mergy policy.一个根据大小(字节)合并,一种根据文档个数合并.
+如果文档大小的方差比较大,建议使用文档大小合并
+当然,你也可以自己写Merging policy</p>
+<h2><a class="header" href="#compare-with-tantivy" id="compare-with-tantivy">Compare with tantivy</a></h2>
+<table><thead><tr><th></th><th>lucene</th><th>tantivy</th></tr></thead><tbody>
+<tr><td>音近词</td><td>✅</td><td>❌</td></tr>
+<tr><td>形近词</td><td>✅</td><td>❌</td></tr>
+<tr><td>自定义排序</td><td>✅</td><td>I don't know</td></tr>
+</tbody></table>
+<h3><a class="header" href="#音近词" id="音近词">音近词</a></h3>
+<p>似乎用处不大</p>
+<p>在google搜索中,只有当所有单词都出现拼写错误,因而没有搜索到任何匹配文档的时候,才会检查音近词,否则搜索的结果就太多了</p>
 
                     </main>
 
@@ -213,14 +376,29 @@
         </div>
 
         
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3000/__livereload");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+        
 
         
 
         
-        
+
         
         <script type="text/javascript">
-            window.playpen_copyable = true;
+            window.playground_copyable = true;
         </script>
         
 

@@ -5,13 +5,24 @@
         <meta charset="UTF-8">
         <title>搜索 - tantivy-insight</title>
         
+        
+
+
+        <!-- Custom HTML head -->
+        
+
 
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        
+        <link rel="icon" href="favicon.svg">
+        
+        
         <link rel="shortcut icon" href="favicon.png">
+        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
@@ -19,8 +30,9 @@
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -36,7 +48,7 @@
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -81,7 +93,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="files.html"><strong aria-hidden="true">2.</strong> 索引文件</a></li><li class="chapter-item expanded "><a href="merging.html"><strong aria-hidden="true">3.</strong> Merging Policy</a></li><li class="chapter-item expanded "><a href="term.html"><strong aria-hidden="true">4.</strong> Term</a></li><li class="chapter-item expanded "><a href="postings.html"><strong aria-hidden="true">5.</strong> 倒排索引</a></li><li class="chapter-item expanded "><a href="search.html" class="active"><strong aria-hidden="true">6.</strong> 搜索</a></li><li class="chapter-item expanded "><a href="skiplist.html"><strong aria-hidden="true">7.</strong> 跳表</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">2.</strong> 索引生成</a></li><li class="chapter-item expanded "><a href="files.html"><strong aria-hidden="true">3.</strong> 索引文件</a></li><li class="chapter-item expanded "><a href="merging.html"><strong aria-hidden="true">4.</strong> Merging Policy</a></li><li class="chapter-item expanded "><a href="term.html"><strong aria-hidden="true">5.</strong> Term</a></li><li class="chapter-item expanded "><a href="postings.html"><strong aria-hidden="true">6.</strong> 倒排索引</a></li><li class="chapter-item expanded "><a href="search.html" class="active"><strong aria-hidden="true">7.</strong> 搜索</a></li><li class="chapter-item expanded "><a href="skiplist.html"><strong aria-hidden="true">8.</strong> 跳表</a></li><li class="chapter-item expanded "><a href="fst.html"><strong aria-hidden="true">9.</strong> FST</a></li><li class="chapter-item expanded "><a href="m25.html"><strong aria-hidden="true">10.</strong> M25</a></li><li class="chapter-item expanded "><a href="lucene.html"><strong aria-hidden="true">11.</strong> Lucene</a></li><li class="chapter-item expanded "><a href="Q&A.html"><strong aria-hidden="true">12.</strong> Q&amp;A</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -190,14 +202,29 @@
         </div>
 
         
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3000/__livereload");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+        
 
         
 
         
-        
+
         
         <script type="text/javascript">
-            window.playpen_copyable = true;
+            window.playground_copyable = true;
         </script>
         
 

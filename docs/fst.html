@@ -1,0 +1,334 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>FST - tantivy-insight</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="favicon.png">
+        
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">2.</strong> 索引生成</a></li><li class="chapter-item expanded "><a href="files.html"><strong aria-hidden="true">3.</strong> 索引文件</a></li><li class="chapter-item expanded "><a href="merging.html"><strong aria-hidden="true">4.</strong> Merging Policy</a></li><li class="chapter-item expanded "><a href="term.html"><strong aria-hidden="true">5.</strong> Term</a></li><li class="chapter-item expanded "><a href="postings.html"><strong aria-hidden="true">6.</strong> 倒排索引</a></li><li class="chapter-item expanded "><a href="search.html"><strong aria-hidden="true">7.</strong> 搜索</a></li><li class="chapter-item expanded "><a href="skiplist.html"><strong aria-hidden="true">8.</strong> 跳表</a></li><li class="chapter-item expanded "><a href="fst.html" class="active"><strong aria-hidden="true">9.</strong> FST</a></li><li class="chapter-item expanded "><a href="m25.html"><strong aria-hidden="true">10.</strong> M25</a></li><li class="chapter-item expanded "><a href="lucene.html"><strong aria-hidden="true">11.</strong> Lucene</a></li><li class="chapter-item expanded "><a href="Q&A.html"><strong aria-hidden="true">12.</strong> Q&amp;A</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">tantivy-insight</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#fst" id="fst">FST</a></h1>
+<p>FST=Trie(前缀压缩)+后缀压缩</p>
+<p>FST优化Trie的同时,也带来了新的问题.否则还要Trie干嘛.</p>
+<h2><a class="header" href="#fst-vs-trie" id="fst-vs-trie">FST vs Trie</a></h2>
+<ol>
+<li>Trie只适合英文</li>
+<li>FST能压缩前缀和后缀. Trie只能压缩前缀</li>
+<li>Trie对插入顺序无所谓,但是FST要求必须按字母顺序插入</li>
+<li>FST主要用在放硬盘里,Trie的序列化到硬盘没见过</li>
+<li>FST加入之后很难修改/删除.Trie的修改和删除容易一点 </li>
+</ol>
+<p>FST修改/删除=重新构建一个FST.删除不能简单的做个标注,因为你要考虑不同路径来的都删除了.</p>
+<p>https://www.cnblogs.com/bonelee/p/6226185.html</p>
+<hr />
+<h2><a class="header" href="#用fst能做什么" id="用fst能做什么">用FST能做什么?</a></h2>
+<ul>
+<li>有序集合</li>
+<li>有序dictionary (value需要定义运算符,比如整数的加法)</li>
+</ul>
+<p>FST与存储相关联.如果只在内存中,不如用无序的hashmap或者有序的BTree.</p>
+<p>存储可以是硬盘,socket或者内存.反正是Rust中writable的东西</p>
+<hr />
+<h2><a class="header" href="#fst-vs-btreesetbtreemap" id="fst-vs-btreesetbtreemap">FST vs BTreeSet,BTreeMap</a></h2>
+<p>Rust标准库里有  BTreeSet 和 BTreeMap. 他们是有序的集合和有序的map.</p>
+<p>FST也是有序的.那么他们的区别是</p>
+<ol>
+<li>FST中key只能是byte sequences. 必须能用[u8] 表示. BTreeSet和BTreeMap中key只要能序列化就行</li>
+<li>FST中value暂时只能是u64. 顶多支持能定义+的格式比如字符串. BTreeMap没有限制</li>
+<li>BTreeSet和BTreeMap的插入,不需要按照顺序.但是FST必须是按顺序插入.不按顺序插入会报错.也就是说FST没有很好的动态扩展性</li>
+</ol>
+<hr />
+<h2><a class="header" href="#fst-vs-gzip" id="fst-vs-gzip">FST vs gzip</a></h2>
+<ol>
+<li>压缩时间和压缩率上,gzip都比FST好</li>
+<li>但是FST能在上面做搜索</li>
+</ol>
+<hr />
+<h2><a class="header" href="#fst-如何压缩后缀的" id="fst-如何压缩后缀的">FST 如何压缩后缀的</a></h2>
+<p>首先要求按字母顺序的插入.否则只能重新构建.现在FST的实现也是这样的.</p>
+<p>难点在于,一个点从unfinished变成finished, 如何判断相同的状态已经出现过了.</p>
+<h3><a class="header" href="#如何判断两个点是不是一样的-" id="如何判断两个点是不是一样的-">如何判断两个点是不是一样的 ?</a></h3>
+<ol>
+<li>是否同时是终态,或者同时不是终态</li>
+<li>所有的儿子是不是一样</li>
+<li>去每个儿子的路径上面的字母(如果是map,还是u64),是不是一样</li>
+</ol>
+<p>只有3个条件都满足,才能合并.</p>
+<p>如果点的数量不大,可以一个一个条件去比较. 但如果数量太多,最好能压缩一下状态.FST用了一个cache压缩状态,就是把所有条件都xor起来,变成一个u64.</p>
+<hr />
+<h2><a class="header" href="#例子" id="例子">例子</a></h2>
+<p><img src="./abcdSS.png" alt="abcdSS" /></p>
+<p>如上图,插入的是abc 和 abcd 两个单词,就会有两个终止状态.FST中不一定只有一个终止状态.也就是说,如果插入的两个单词有前缀关系,就会出现多个终止态.</p>
+<p>FST插入一定要按照字典序,例如必须先插入abc,再插入abcd.</p>
+<p>如果先插入了abcd,即下图</p>
+<p><img src="./abcd.png" alt="abcd" /></p>
+<p>再插入abc,对于状态4来说,就有点尴尬了.一个普通状态要变成终止态?</p>
+<hr />
+<p>我们再看一个插入顺序的问题,导致发生严重后果的例子.首先我们插入thursday和wednesday.现在的FST是正确的.</p>
+<p><img src="./thursday.png" alt="thursday" /></p>
+<p>如果我们再插入一个单词 thurs ,变成下图</p>
+<p><img src="./thursdaySS.png" alt="thursdaySS" /></p>
+<p>副作用是 wednes 也在这个FST中. 这不是我们想要的</p>
+<p>我们正确的插入顺序是 thurs thursday wednesday ,FST图应该是这样</p>
+<p><img src="./thursdayTT.png" alt="thursdayTT" /></p>
+<p>注意S2和q14是不同的两个点.不能捏在一起.</p>
+<h2><a class="header" href="#fst-的编程实现" id="fst-的编程实现">FST 的编程实现</a></h2>
+<ol>
+<li>在现有的FST 中,找到最长前缀.前缀压缩总是安全的,就算路过终态也没关系.终态的点也可以复用.</li>
+</ol>
+<p>最后一个单词的每一个节点,都是 BuilderNodeUnfinished . BuilderNodeUnfinished 表示这个点还可能有新的儿子节点.只有一个节点,不会在生出新的儿子节点,才可能从后缀开始合并.</p>
+<h2><a class="header" href="#原则" id="原则">原则</a></h2>
+<ul>
+<li>一个点只可能unfinished转成finished,不可能finished转成unfinished</li>
+<li>起点总是非终态的。直到全部完成</li>
+<li>总有一个终态对象是可以复用的</li>
+</ul>
+<p>FST的美妙之处在于,虽然没有太刻意的处理前缀,但是前缀还是压缩了.</p>
+<h2><a class="header" href="#如何学习fst" id="如何学习fst">如何学习FST</a></h2>
+<p>fst-bin 目录提供的二进制可以把fst文件转成graphviz格式,然后可以画出图片.参见 <code>fst -h</code> </p>
+<p>如果你想知道某几个输入之后的FST的形状,可以用它画一画.</p>
+<h2><a class="header" href="#fst如何序列化" id="fst如何序列化">FST如何序列化</a></h2>
+<p>todo 有点绕,不想看了.反正没用serde</p>
+<h2><a class="header" href="#fst如果做模糊搜索的levenshteinregex" id="fst如果做模糊搜索的levenshteinregex">FST如果做模糊搜索的(Levenshtein,regex)</a></h2>
+<p>todo</p>
+<h2><a class="header" href="#tantivy中的fst" id="tantivy中的fst">Tantivy中的FST</a></h2>
+<p>tantivy中FST用来存term</p>
+<p>tantivy魔改了FST,我还没细看.为什么要魔改,我也不清楚</p>
+<h2><a class="header" href="#参考文献" id="参考文献">参考文献</a></h2>
+<p>https://blog.burntsushi.net/transducers/</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="skiplist.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="m25.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="skiplist.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="m25.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3000/__livereload");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
