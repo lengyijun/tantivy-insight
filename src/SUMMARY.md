@@ -9,6 +9,6 @@
 - [搜索](./search.md)
 - [跳表](./skiplist.md)
 - [FST](./fst.md)
-- [M25](./m25.md)
+- [BM25](./bm25.md)
 - [Lucene](./lucene.md)
 - [Q&A](./Q&A.md)

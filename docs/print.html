@@ -97,7 +97,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">2.</strong> 索引生成</a></li><li class="chapter-item expanded "><a href="files.html"><strong aria-hidden="true">3.</strong> 索引文件</a></li><li class="chapter-item expanded "><a href="merging.html"><strong aria-hidden="true">4.</strong> Merging Policy</a></li><li class="chapter-item expanded "><a href="term.html"><strong aria-hidden="true">5.</strong> Term</a></li><li class="chapter-item expanded "><a href="postings.html"><strong aria-hidden="true">6.</strong> 倒排索引</a></li><li class="chapter-item expanded "><a href="search.html"><strong aria-hidden="true">7.</strong> 搜索</a></li><li class="chapter-item expanded "><a href="skiplist.html"><strong aria-hidden="true">8.</strong> 跳表</a></li><li class="chapter-item expanded "><a href="fst.html"><strong aria-hidden="true">9.</strong> FST</a></li><li class="chapter-item expanded "><a href="m25.html"><strong aria-hidden="true">10.</strong> M25</a></li><li class="chapter-item expanded "><a href="lucene.html"><strong aria-hidden="true">11.</strong> Lucene</a></li><li class="chapter-item expanded "><a href="Q&A.html"><strong aria-hidden="true">12.</strong> Q&amp;A</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">2.</strong> 索引生成</a></li><li class="chapter-item expanded "><a href="files.html"><strong aria-hidden="true">3.</strong> 索引文件</a></li><li class="chapter-item expanded "><a href="merging.html"><strong aria-hidden="true">4.</strong> Merging Policy</a></li><li class="chapter-item expanded "><a href="term.html"><strong aria-hidden="true">5.</strong> Term</a></li><li class="chapter-item expanded "><a href="postings.html"><strong aria-hidden="true">6.</strong> 倒排索引</a></li><li class="chapter-item expanded "><a href="search.html"><strong aria-hidden="true">7.</strong> 搜索</a></li><li class="chapter-item expanded "><a href="skiplist.html"><strong aria-hidden="true">8.</strong> 跳表</a></li><li class="chapter-item expanded "><a href="fst.html"><strong aria-hidden="true">9.</strong> FST</a></li><li class="chapter-item expanded "><a href="bm25.html"><strong aria-hidden="true">10.</strong> BM25</a></li><li class="chapter-item expanded "><a href="lucene.html"><strong aria-hidden="true">11.</strong> Lucene</a></li><li class="chapter-item expanded "><a href="Q&A.html"><strong aria-hidden="true">12.</strong> Q&amp;A</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -209,7 +209,7 @@
 <p>Merge的时候会使用Merging Policy. Tantivy中只实现一个Merging Policy. 他的工作流程如下:</p>
 <ol>
 <li>首先如果一个Segment太大,就不管了</li>
-<li>找到和Segment差不多大的一些Segment,比如 8 9 10可以考虑合在一起. 100的就不聚在一起了</li>
+<li>找到和Segment差不多大的一些Segment,比如 8 9 10可以考虑合在一起. 100和8 9就不能聚在一起了</li>
 <li>如果这一组的Segment有8个,那就合并.比如8个8,就能合并.7个8就不能</li>
 </ol>
 <hr />
@@ -239,6 +239,10 @@
 <p>然后我们要插倒排索引。倒排索引在pos文件里面。在一个大的pos文件里面，根据Field被分割成几部分。
 首先找到title的部分。</p>
 <p>然后我们要找obama的部分。obama是一个Term，有一个TermInfo描述了Term在Field里的偏移量。这样就能找到obama的倒排索引的内容了</p>
+<p>倒排索引是以Block为单位的，每个block里有128个文章和对应的出现频率。 用128是SIMD的要求。</p>
+<p>但并不是一个segment只能有128个文章。事实上10000个文章是没有问题的。128篇文章只是一个处理单元。每收集了128篇文章，就保存一次磁盘。
+最后尾巴上不够128篇文章也没关系.用0填充就可以了</p>
+<p>在实现上，是复用一个Block.这个block有一个is_full方法。 一旦full了，就write to disk,然后clean这个struct,重复使用这一块内存。</p>
 <h1><a class="header" href="#skiplist" id="skiplist">SkipList</a></h1>
 <p>在倒排索引中使用了跳表.来加速查询.</p>
 <p>每个Term建立一个跳表.跳表里存DocId. 可以快速查询一篇文档里面有没有这个Term</p>
@@ -332,7 +336,8 @@
 <p>tantivy魔改了FST,我还没细看.为什么要魔改,我也不清楚</p>
 <h2><a class="header" href="#参考文献" id="参考文献">参考文献</a></h2>
 <p>https://blog.burntsushi.net/transducers/</p>
-<h1><a class="header" href="#m25" id="m25">M25</a></h1>
+<h1><a class="header" href="#bm25" id="bm25">BM25</a></h1>
+<p>todo</p>
 <h1><a class="header" href="#lucene" id="lucene">Lucene</a></h1>
 <p>这里整理一些我看到的和lucene相关的资料</p>
 <table><thead><tr><th>Jargon</th><th>Meaning</th></tr></thead><tbody>

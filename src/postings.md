@@ -8,7 +8,7 @@
 
 The term frequency is the number of occurrences of the term within the document.
 
-In source code, Term->[(DocId,frequencies);128], which is in serilizer.rs:265 Block struct
+In source code, Term->[(DocId,frequencies);128], which is in postings/serilizer.rs:265 Block struct
 
 Block is used in PostingsSerializer
 
