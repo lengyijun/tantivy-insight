@@ -166,7 +166,7 @@
                         <h1><a class="header" href="#term" id="term">Term</a></h1>
 <p>title:obama 是一个Term. 表示在title中包含obama</p>
 <p>多个Term的组合是查询条件, 比如 title:obama  OR title:president OR body:obama OR body:president </p>
-<p>一个Term是个[u8]. 前4个u8(u32),表示title/body. u32&lt;-&gt;title/body在Schema中.</p>
+<p>一个Term是个[u8]. 前4个u8(u32),表示Field(title/body). u32-&gt;Field 在Schema中.</p>
 <p>Term[5:]表示obama</p>
 <p>term会放在fst中,写在硬盘里</p>
 
