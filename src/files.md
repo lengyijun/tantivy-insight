@@ -16,3 +16,13 @@
 
 但是转成某个数据结构之后,原始文件还会在缓存中存在.用的是一个HashMap.虽然我不确定HashMap的意义,毕竟把内存搞的很大
 
+
+## POSTIONS的作用
+.pos是最大的一个文件，但是他其实没有什么用。
+只有在词组查询的时候才会用到。
+
+position与positionreader联系紧密。
+SegmentPosting里有一个positionreader
+但是SegmentPosting中的positionreader只在positions_with_offset里用到过
+继续追查position_with_offset 发现用处很少。
+
