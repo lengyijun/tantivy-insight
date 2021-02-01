@@ -26,3 +26,49 @@ SegmentPosting里有一个positionreader
 但是SegmentPosting中的positionreader只在positions_with_offset里用到过
 继续追查position_with_offset 发现用处很少。
 
+### 如何验证？
+用vmtouch
+首先把pos文件从内存中释放
+```
+vmtouch -ve engines/tantivy-0.13/idx/05547fff51334b478466bd834bb95df6.pos
+```
+
+然后查看一下，发现确实都释放了。
+```
+$ vmtouch -v engines/tantivy-0.13/idx/05547fff51334b478466bd834bb95df6.pos
+
+engines/tantivy-0.13/idx/05547fff51334b478466bd834bb95df6.pos
+[                                                            ] 0/6032
+
+           Files: 1
+     Directories: 0
+  Resident Pages: 0/6032  0/23M  0%
+         Elapsed: 0.000701 seconds
+
+```
+以上的输出表示内存中没有这个pos文件的缓存。
+
+然后我们把query.txt中包含phrase的行都删除掉。我是用vim打开，然后敲
+```
+:g/phrase/d
+```
+
+然后 `make bench`
+
+再 
+```
+$ vmtouch -v engines/tantivy-0.13/idx/05547fff51334b478466bd834bb95df6.pos
+
+engines/tantivy-0.13/idx/05547fff51334b478466bd834bb95df6.pos
+[                                                oOOO     ooo] 401/6032
+
+           Files: 1
+     Directories: 0
+  Resident Pages: 401/6032  1M/23M  6.65%
+         Elapsed: 0.00083 seconds
+
+```
+
+发现只读了一点头部信息，并没有把整个文件都加载到内存。
+如果真正使用了pos文件，整个文件都会在内存中，可以自行实验一下。
+

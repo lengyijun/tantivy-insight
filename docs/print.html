@@ -199,6 +199,49 @@
 <h2><a class="header" href="#tantivy中有时会产生很大的索引文件比如表格中的pos文件那么他是怎么读到内存中的" id="tantivy中有时会产生很大的索引文件比如表格中的pos文件那么他是怎么读到内存中的">Tantivy中,有时会产生很大的索引文件,比如表格中的.pos文件.那么他是怎么读到内存中的?</a></h2>
 <p>首先文件用mmap读到内存中,然后转到某个数据结构.</p>
 <p>但是转成某个数据结构之后,原始文件还会在缓存中存在.用的是一个HashMap.虽然我不确定HashMap的意义,毕竟把内存搞的很大</p>
+<h2><a class="header" href="#postions的作用" id="postions的作用">POSTIONS的作用</a></h2>
+<p>.pos是最大的一个文件，但是他其实没有什么用。
+只有在词组查询的时候才会用到。</p>
+<p>position与positionreader联系紧密。
+SegmentPosting里有一个positionreader
+但是SegmentPosting中的positionreader只在positions_with_offset里用到过
+继续追查position_with_offset 发现用处很少。</p>
+<h3><a class="header" href="#如何验证" id="如何验证">如何验证？</a></h3>
+<p>用vmtouch
+首先把pos文件从内存中释放</p>
+<pre><code>vmtouch -ve engines/tantivy-0.13/idx/05547fff51334b478466bd834bb95df6.pos
+</code></pre>
+<p>然后查看一下，发现确实都释放了。</p>
+<pre><code>$ vmtouch -v engines/tantivy-0.13/idx/05547fff51334b478466bd834bb95df6.pos
+
+engines/tantivy-0.13/idx/05547fff51334b478466bd834bb95df6.pos
+[                                                            ] 0/6032
+
+           Files: 1
+     Directories: 0
+  Resident Pages: 0/6032  0/23M  0%
+         Elapsed: 0.000701 seconds
+
+</code></pre>
+<p>以上的输出表示内存中没有这个pos文件的缓存。</p>
+<p>然后我们把query.txt中包含phrase的行都删除掉。我是用vim打开，然后敲</p>
+<pre><code>:g/phrase/d
+</code></pre>
+<p>然后 <code>make bench</code></p>
+<p>再 </p>
+<pre><code>$ vmtouch -v engines/tantivy-0.13/idx/05547fff51334b478466bd834bb95df6.pos
+
+engines/tantivy-0.13/idx/05547fff51334b478466bd834bb95df6.pos
+[                                                oOOO     ooo] 401/6032
+
+           Files: 1
+     Directories: 0
+  Resident Pages: 401/6032  1M/23M  6.65%
+         Elapsed: 0.00083 seconds
+
+</code></pre>
+<p>发现只读了一点头部信息，并没有把整个文件都加载到内存。
+如果真正使用了pos文件，整个文件都会在内存中，可以自行实验一下。</p>
 <h1><a class="header" href="#merging-policy" id="merging-policy">Merging Policy</a></h1>
 <p>一个document一开始是一个segment.
 成百上千的document就会是成百上千的segment.
@@ -226,7 +269,7 @@
 <p>是Term -&gt; [DocId] 的映射</p>
 <p>在tantivy中,是 Term -&gt; [(DocId,frequencies)]</p>
 <p>The term frequency is the number of occurrences of the term within the document.</p>
-<p>In source code, Term-&gt;[(DocId,frequencies);128], which is in serilizer.rs:265 Block struct</p>
+<p>In source code, Term-&gt;[(DocId,frequencies);128], which is in postings/serilizer.rs:265 Block struct</p>
 <p>Block is used in PostingsSerializer</p>
 <p>有3个Trait: Query, Weight, Score</p>
 <p>Query是对 搜索pattern解析后返回的抽象. 搜索pattern解析后返回值是 Box<dyn Query></p>
