@@ -271,6 +271,7 @@ engines/tantivy-0.13/idx/05547fff51334b478466bd834bb95df6.pos
 <p>The term frequency is the number of occurrences of the term within the document.</p>
 <p>In source code, Term-&gt;[(DocId,frequencies);128], which is in postings/serilizer.rs:265 Block struct</p>
 <p>Block is used in PostingsSerializer</p>
+<p>解码以Block为单位。每次解码后的数据不会保存，而是下一次要用到的时候再次解码。</p>
 <p>有3个Trait: Query, Weight, Score</p>
 <p>Query是对 搜索pattern解析后返回的抽象. 搜索pattern解析后返回值是 Box<dyn Query></p>
 <p>Query负责管理Weight. </p>

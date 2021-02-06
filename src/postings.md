@@ -12,3 +12,5 @@ In source code, Term->[(DocId,frequencies);128], which is in postings/serilizer.
 
 Block is used in PostingsSerializer
 
+解码以Block为单位。每次解码后的数据不会保存，而是下一次要用到的时候再次解码。
+
