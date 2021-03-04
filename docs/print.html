@@ -97,7 +97,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">2.</strong> 索引生成</a></li><li class="chapter-item expanded "><a href="files.html"><strong aria-hidden="true">3.</strong> 索引文件</a></li><li class="chapter-item expanded "><a href="merging.html"><strong aria-hidden="true">4.</strong> Merging Policy</a></li><li class="chapter-item expanded "><a href="term.html"><strong aria-hidden="true">5.</strong> Term</a></li><li class="chapter-item expanded "><a href="postings.html"><strong aria-hidden="true">6.</strong> 倒排索引</a></li><li class="chapter-item expanded "><a href="search.html"><strong aria-hidden="true">7.</strong> 搜索</a></li><li class="chapter-item expanded "><a href="skiplist.html"><strong aria-hidden="true">8.</strong> 跳表</a></li><li class="chapter-item expanded "><a href="fst.html"><strong aria-hidden="true">9.</strong> FST</a></li><li class="chapter-item expanded "><a href="bm25.html"><strong aria-hidden="true">10.</strong> BM25</a></li><li class="chapter-item expanded "><a href="lucene.html"><strong aria-hidden="true">11.</strong> Lucene</a></li><li class="chapter-item expanded "><a href="Q&A.html"><strong aria-hidden="true">12.</strong> Q&amp;A</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">2.</strong> 索引生成</a></li><li class="chapter-item expanded "><a href="files.html"><strong aria-hidden="true">3.</strong> 索引文件</a></li><li class="chapter-item expanded "><a href="merging.html"><strong aria-hidden="true">4.</strong> Merging Policy</a></li><li class="chapter-item expanded "><a href="term.html"><strong aria-hidden="true">5.</strong> Term</a></li><li class="chapter-item expanded "><a href="postings.html"><strong aria-hidden="true">6.</strong> 倒排索引</a></li><li class="chapter-item expanded "><a href="posting_code.html"><strong aria-hidden="true">7.</strong> 倒排索引的代码实现</a></li><li class="chapter-item expanded "><a href="search.html"><strong aria-hidden="true">8.</strong> 搜索</a></li><li class="chapter-item expanded "><a href="skiplist.html"><strong aria-hidden="true">9.</strong> 跳表</a></li><li class="chapter-item expanded "><a href="fst.html"><strong aria-hidden="true">10.</strong> FST</a></li><li class="chapter-item expanded "><a href="bm25.html"><strong aria-hidden="true">11.</strong> BM25</a></li><li class="chapter-item expanded "><a href="lucene.html"><strong aria-hidden="true">12.</strong> Lucene</a></li><li class="chapter-item expanded "><a href="Q&A.html"><strong aria-hidden="true">13.</strong> Q&amp;A</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -272,6 +272,11 @@ engines/tantivy-0.13/idx/05547fff51334b478466bd834bb95df6.pos
 <p>In source code, Term-&gt;[(DocId,frequencies);128], which is in postings/serilizer.rs:265 Block struct</p>
 <p>Block is used in PostingsSerializer</p>
 <p>解码以Block为单位。每次解码后的数据不会保存，而是下一次要用到的时候再次解码。</p>
+<h1><a class="header" href="#倒排索引的代码实现" id="倒排索引的代码实现">倒排索引的代码实现</a></h1>
+<p>首先每个field的倒排索引是独立的。</p>
+<p>可以预见到，构建一个倒排索引对象是挺费劲的，所以是lazy的，按需创建</p>
+<p>创建过的，也不要随便销毁。</p>
+<p>综上，每个Segment都有一个倒排索引对象的缓存（HashMap）。</p>
 <p>有3个Trait: Query, Weight, Score</p>
 <p>Query是对 搜索pattern解析后返回的抽象. 搜索pattern解析后返回值是 Box<dyn Query></p>
 <p>Query负责管理Weight. </p>
@@ -436,21 +441,6 @@ engines/tantivy-0.13/idx/05547fff51334b478466bd834bb95df6.pos
 
         </div>
 
-        
-        <!-- Livereload script (if served using the cli tool) -->
-        <script type="text/javascript">
-            var socket = new WebSocket("ws://localhost:3000/__livereload");
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
         
 
         

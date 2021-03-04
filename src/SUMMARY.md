@@ -6,6 +6,7 @@
 - [Merging Policy](./merging.md)
 - [Term](./term.md)
 - [倒排索引](./postings.md)
+- [倒排索引的代码实现](posting_code.md)
 - [搜索](./search.md)
 - [跳表](./skiplist.md)
 - [FST](./fst.md)
