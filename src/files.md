@@ -1,11 +1,11 @@
 |                |       |            |                                    |
 | -------------- | ----- | ---------- | ---------------------------------- |
-| POSTING        | 8.5M  | .idx       | 倒排索引                           |
-| POSTIONS       | 1.6G  | .pos       | 每个Term在document中的position     |
-| TERMS          | 60M   | .term      | Term->TermInfo dictionary. 使用FST |
-| STORE          | 4.5G  | .store     | 原document.如果Scheme中加了STORE   |
-| POSTITIONSSKIP | 9.4M  | .posidx    | todo                               |
-| FIELDNORMS     | 8.5M  | .fieldnorm | todo                               |
+| POSTING        | 600M  | .idx       | 倒排索引                           |
+| POSTIONS       | 1.1G  | .pos       | 每个Term在document中的position     |
+| TERMS          | 30M   | .term      | Term->TermInfo dictionary. 使用FST |
+| STORE          | 18M   | .store     | 原document.如果Scheme中加了STORE   |
+| POSTITIONSSKIP | 6M    | .posidx    | todo                               |
+| FIELDNORMS     | 3M    | .fieldnorm | todo                               |
 | FASTFIELDS     | 5byte | .fast      | 空文件                             |
 
 
